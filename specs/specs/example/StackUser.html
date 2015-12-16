@@ -1,0 +1,88 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+<link href="../../concordion.css" rel="stylesheet" type="text/css" />
+<body>
+
+    <h1>Authentication of Exam System</h1>
+
+    <div class="example">
+        <h3>Should login using initial user <span concordion:set="#username">Wang</span></h3>
+        <p>
+            The response status code should be
+            <b concordion:assertEquals="userLogin(#username)">200</b>
+        </p>
+    </div>
+
+    <div class="example">
+        <h3>After <span concordion:set="#username">Wang</span> log out, response status code should be</h3>
+        <p>
+            The response status code should be
+            <b concordion:assertEquals="userLogout()">200</b>
+        </p>
+    </div>
+
+    <div class="example">
+        <h3>
+            Not able to login for unknown user <span concordion:set="#username">Deng</span>
+        </h3>
+        <p>
+            The response status code should be
+            <b concordion:assertEquals="userLogin(#username)">400</b>
+        </p>
+    </div>
+
+    <div class="example">
+        <h3>After <span concordion:set="#username">Wang</span> login, we can get his role from backend</h3>
+        <span concordion:execute="setLoginUser(#username)" />
+        <p>
+            The role should be
+            <b concordion:assertEquals="getCurrentUser()">PROJECT_MANAGER</b>
+        </p>
+    </div>
+
+    <div class="example">
+        <h3>Import a new user by admin user <span concordion:set="#username">admin</span></h3>
+        <span concordion:execute="setLoginUser(#username)"></span>
+        <span concordion:execute="#user_id = uniqueUserId()"></span><br />
+        User Id: <span concordion:echo="#user_id"></span> <br />
+        User Name: <span concordion:set="#user_name">Li Ming</span>
+        <p>
+            The response code is
+            <b concordion:assertEquals="createUser(#user_id, #user_name)">201</b>, which indicates the user is created successfully.
+        </p>
+    </div>
+
+    <div class="example">
+        <h3>
+            <span concordion:set="#username">Wang</span> can get all related projects
+        </h3>
+        <span concordion:execute="setLoginUser(#username)"></span><br />
+        <p>
+            The total number is <b concordion:assertEquals="getProjectsSize()">2</b>
+        </p>
+        <table concordion:verifyRows="#projectName : getSearchResultsFor()">
+            <tr><th concordion:assertEquals="#projectName">Matching Usernames</th></tr>
+            <tr><td>ketsu</td></tr>
+            <tr><td>p2p</td></tr>
+        </table>
+    </div>
+
+    <div class="example">
+        <h3>
+            When comes to <span concordion:set="#username">Wang</span>'s qualifications
+        </h3>
+        <span concordion:execute="setLoginUser(#username)"></span><br />
+        <p>
+            The total number is <b concordion:assertEquals="getCapabilityNumber()">3</b>
+        </p>
+        <table concordion:verifyRows="#qualification : getQualifications()">
+            <tr>
+                <th concordion:assertEquals="#qualification.solution">Matching Solution</th>
+                <th concordion:assertEquals="#qualification.stack">Matching Stack</th>
+            </tr>
+            <tr><td>data api</td><td>java + jersey</td></tr>
+            <tr><td>single page app</td><td>rails + mongodb</td></tr>
+            <tr><td>data api</td><td>rails + mongodb</td></tr>
+        </table>
+    </div>
+</body>
+</html>

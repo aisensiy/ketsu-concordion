@@ -1,0 +1,93 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+    <link href="../../concordion.css" rel="stylesheet" type="text/css" />
+    <body>
+
+        <h1>Authentication of Exam System</h1>
+        <div class="example">
+            <h3>
+                For user <span concordion:set="#username">admin</span>,
+                you can import a new project with following information
+                <span concordion:execute="setLoginUser(#username)" />
+            </h3>
+            <p>
+                <span concordion:execute="#project_id = uniqueProjectId()"></span><br />
+                Project Id: <span concordion:echo="#project_id"></span> <br />
+                Project Name: <span concordion:set="#project_name">CMS</span> <br />
+                Project Account: <span concordion:set="#account_name">ThoughtWorks</span><br/>
+                The response status code should be
+                <b concordion:assertEquals="importNewProject(#project_id, #project_name, #account_name)">201</b>
+                , which indicates a new project is created successfully.
+            </p>
+        </div>
+
+        <div class="example">
+            <h3>
+                After create the project, you can also get details back.
+            </h3>
+            <p>
+                Project Id: <span concordion:echo="#project_id"></span> <br />
+                Project Name: <span concordion:assertEquals="getProjectName(#project_id)">CMS</span>
+                Project Account: <span concordion:assertEquals="getProjectAccount(#project_id)">ThoughtWorks</span><br/>
+            </p>
+        </div>
+
+        <div class="example">
+            <h3>
+                As a admin user, you can define a new capability for the project.
+            </h3>
+            <p>
+                The new capability has parameters as followings:
+                Solution Id: <span concordion:set="#solution_id">1</span> <br />
+                Stack Id: <span concordion:set="#stack_id">1</span> <br />
+                The response status code should be:
+                <span concordion:assertEquals="defineANewCapability(#project_id, #solution_id, #stack_id)">201</span>
+                , which indicates a new capability is created successfully.
+
+            </p>
+        </div>
+
+        <div class="example">
+            <h3>
+                After define a new capability for project <span concordion:echo="#project_id"></span>, you can retrieve details back.
+            </h3>
+            <p>
+                Capability for the project has following information:
+            </p>
+            <table concordion:verifyRows="#capability : getFirstCapability(#project_id)">
+                <tr>
+                    <th concordion:assertEquals="#capability.solutionId">Solution Id</th>
+                    <th concordion:assertEquals="#capability.solutionName">Solution Name</th>
+                    <th concordion:assertEquals="#capability.stackId">Stack Id</th>
+                    <th concordion:assertEquals="#capability.stackName">Stack Name</th>
+                </tr>
+                <tr><td>1</td><td>data api</td><td>1</td><td>java + jersey</td></tr>
+            </table>
+        </div>
+
+        <div class="example">
+            <h3>
+                As a admin user, you can define a new solution with the following parameters.
+            </h3>
+            <p>
+                Solution Name: <span concordion:set="#solution_name">Web Data Api</span> <br />
+                The response status code should be:
+                <span concordion:assertEquals="defineANewSolution(#solution_name)">201</span>
+                , which indicates a new solution is created successfully.
+
+            </p>
+        </div>
+
+        <div class="example">
+            <h3>
+                As a admin user, you can also define a new stack with the following parameters.
+            </h3>
+            <p>
+                Stack Name: <span concordion:set="#stack_name">Redis,Mysql,C#</span> <br />
+                The response status code should be:
+                <span concordion:assertEquals="defineANewStack(#stack_name)">201</span>
+                , which indicates a new solution is created successfully.
+
+            </p>
+        </div>
+    </body>
+</html>
