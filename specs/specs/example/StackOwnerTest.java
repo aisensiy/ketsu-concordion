@@ -40,7 +40,6 @@ public class StackOwnerTest {
         form.param("user_name", username);
         final Response response = client.target(getUrl("/authentication")).request().post(Entity.form(form));
         cookie = response.getHeaderString("Set-Cookie");
-        System.out.println(cookie);
         return response.getStatus() + "";
     }
 
@@ -69,7 +68,6 @@ public class StackOwnerTest {
                 .header("Cookie", cookie)
                 .get();
         Map map = response.readEntity(Map.class);
-        System.out.println(response.getHeaderString("Set-Cookie"));
 
         return map.get("name") + "";
     }
@@ -81,7 +79,6 @@ public class StackOwnerTest {
                 .header("Cookie", cookie)
                 .get();
         Map map = response.readEntity(Map.class);
-        System.out.println(response.getHeaderString("Set-Cookie"));
 
         return map.get("account") + "";
     }
@@ -110,12 +107,17 @@ public class StackOwnerTest {
             Map stack = (Map) capability.get("stack");
             Map solution = (Map) capability.get("solution");
             return new Capability(
+                    capability.get("id")+"",
                     stack.get("id")+"",
                     stack.get("name")+"",
                     solution.get("id")+"",
                     solution.get("name")+""
             );
         }).collect(toList());
+    }
+    public String getOneCapability(String id) {
+        Iterator<Capability> iterator = getFirstCapability(id).iterator();
+        return iterator.next().getId();
     }
     public String defineANewSolution(String solutionName){
         Form form = new Form();
@@ -175,5 +177,14 @@ public class StackOwnerTest {
             }
         });
         return members;
+    }
+    public String deprecateStack(String projectId, String capabilityId){
+        System.out.println(capabilityId);
+        final Response response = client
+                .target(getUrl("/projects/"+projectId+"/capabilities/"+capabilityId+"/deprecated"))
+                .request()
+                .header("Cookie", cookie)
+                .post(Entity.form(new Form()));
+        return response.getStatus()+"";
     }
 }

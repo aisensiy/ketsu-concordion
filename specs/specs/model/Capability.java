@@ -6,6 +6,12 @@ public class Capability {
     private final String solutionId;
     private final String solutionName;
 
+    public String getId() {
+        return id;
+    }
+
+    private final String id;
+
     public String getStackId() {
         return stackId;
     }
@@ -22,8 +28,8 @@ public class Capability {
         return solutionName;
     }
 
-    public Capability(String stackId, String stackName, String solutionId, String solutionName) {
-
+    public Capability(String id, String stackId, String stackName, String solutionId, String solutionName) {
+        this.id = id;
         this.stackId = stackId;
         this.stackName = stackName;
         this.solutionId = solutionId;

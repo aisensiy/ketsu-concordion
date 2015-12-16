@@ -36,7 +36,7 @@
                 As a admin user, you can define a new capability for the project.
             </h3>
             <p>
-                The new capability has parameters as followings:
+                The new capability has parameters as followings:<br />
                 Solution Id: <span concordion:set="#solution_id">1</span> <br />
                 Stack Id: <span concordion:set="#stack_id">1</span> <br />
                 The response status code should be:
@@ -55,13 +55,28 @@
             </p>
             <table concordion:verifyRows="#capability : getFirstCapability(#project_id)">
                 <tr>
+                    <th concordion:echo="#capability.id">Capability Id</th>
                     <th concordion:assertEquals="#capability.solutionId">Solution Id</th>
                     <th concordion:assertEquals="#capability.solutionName">Solution Name</th>
                     <th concordion:assertEquals="#capability.stackId">Stack Id</th>
                     <th concordion:assertEquals="#capability.stackName">Stack Name</th>
                 </tr>
-                <tr><td>1</td><td>data api</td><td>1</td><td>java + jersey</td></tr>
+                <tr><td></td><td>1</td><td>data api</td><td>1</td><td>java + jersey</td></tr>
             </table>
+        </div>
+
+        <div class="example">
+            <h3>
+                When stacks evolves, capability with old stack will be deprecated.
+            </h3>
+            <p>
+                <span concordion:execute="#capabilityOne=getOneCapability(#project_id)"></span>
+                Deprecate capability for <span concordion:echo="#capabilityOne"></span>
+                The response status code should be:
+                <span concordion:assertEquals="deprecateStack(#project_id, #capabilityOne)">200</span>
+                , which indicates a new solution is created successfully.
+            </p>
+
         </div>
 
         <div class="example">
