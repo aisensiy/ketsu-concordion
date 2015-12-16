@@ -26,7 +26,7 @@
             </h3>
             <p>
                 Project Id: <span concordion:echo="#project_id"></span> <br />
-                Project Name: <span concordion:assertEquals="getProjectName(#project_id)">CMS</span>
+                Project Name: <span concordion:assertEquals="getProjectName(#project_id)">CMS</span> <br/>
                 Project Account: <span concordion:assertEquals="getProjectAccount(#project_id)">ThoughtWorks</span><br/>
             </p>
         </div>
@@ -88,6 +88,51 @@
                 , which indicates a new solution is created successfully.
 
             </p>
+        </div>
+
+        <div class="example">
+            <h3>
+                As admin user, you can also assign a new member to this project.
+            </h3>
+            <p>
+                Assign an existing user with<br/>
+                User Id: <span concordion:set="#user_id">101</span> <br />
+                User Name: <span concordion:set="#user_name">xiaoming</span> <br />
+                Assign Period: From <span concordion:set="#start">2015-10-08</span> to
+                <span concordion:set="#end">2015-12-16</span> <br />
+                The response status code should be:
+                <span concordion:assertEquals="addNewMember(#user_id, #start, #end, #project_id)">200</span>
+                , which indicates the member is assigned to the project successfully.
+
+            </p>
+            <p>
+                Assign another existing user with<br/>
+                User Id: <span concordion:set="#user_id">100</span> <br />
+                User Name: <span concordion:set="#user_name">shanchuan</span> <br />
+                Assign Period: From <span concordion:set="#start">2015-06-08</span> to
+                <span concordion:set="#end">2015-10-16</span> <br />
+                The response status code should be:
+                <span concordion:assertEquals="addNewMember(#user_id, #start, #end, #project_id)">200</span>
+                , which indicates the member is assigned to the project successfully.
+
+            </p>
+        </div>
+
+        <div class="example">
+            <h3>
+                After assign user xiaoming and shanchuan to the project, you can find them in project members table below.
+            </h3>
+            <p>
+                Members in Project <span concordion:echo="#project_id"></span>
+            </p>
+            <table concordion:verifyRows="#member : getAllMembers(#project_id)">
+                <tr>
+                    <th concordion:assertEquals="#member.id">Id</th>
+                    <th concordion:assertEquals="#member.name">Name</th>
+                </tr>
+                <tr><td>100</td><td>shanchuan</td></tr>
+                <tr><td>101</td><td>xiaoming</td></tr>
+            </table>
         </div>
     </body>
 </html>

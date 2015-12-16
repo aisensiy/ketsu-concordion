@@ -4,6 +4,7 @@ import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import specs.model.Capability;
+import specs.model.Member;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -137,5 +138,42 @@ public class StackOwnerTest {
                 .header("Cookie", cookie)
                 .post(Entity.form(form));
         return response.getStatus()+"";
+    }
+    public String addNewMember(String userId, String start, String end, String projectId){
+        Form form = new Form();
+        form.param("user_id", userId);
+        form.param("starts_at", start);
+        form.param("ends_at", end);
+        final Response response = client
+                .target(getUrl("/projects/"+projectId+"/users"))
+                .request()
+                .header("Cookie", cookie)
+                .post(Entity.form(form));
+        return response.getStatus()+"";
+    }
+    public Iterable<Member> getAllMembers(String projectId){
+        final Response response = client
+                .target(getUrl("/projects/" + projectId +"/users"))
+                .request()
+                .header("Cookie", cookie)
+                .get();
+        List<Map> members = response.readEntity(ArrayList.class);
+        List<Member> collect = members.stream().map(member -> new Member(
+                member.get("id") + "",
+                member.get("name") + ""
+                )).collect(toList());
+        return removeDuplicateMembers(collect);
+    }
+    private List<Member> removeDuplicateMembers(List<Member> origin){
+        List<Member> members = new ArrayList<>();
+        List<String> keys = new ArrayList<>();
+        origin.stream().forEach(member -> {
+            if(keys.indexOf(member.getName()) == -1){
+                member.getName();
+                keys.add(member.getName());
+                members.add(member);
+            }
+        });
+        return members;
     }
 }
